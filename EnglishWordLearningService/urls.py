@@ -20,4 +20,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index),
+    path("dictionary", views.dictionary),
+    path("add_word", views.add_word),
+    path("send_word", views.send_word)
 ]

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление слов в словарь</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        .dictionary-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            background-color: white;
+        }
+        .form-title {
+            color: #0d6efd;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="dictionary-card">
+                    <h2 class="form-title">Добавить новое слово в словарь</h2>
+                    
+                    <form id="addWordForm">
+                        <div class="mb-3">
+                            <label for="englishWord" class="form-label">Английское слово</label>
+                            <input type="text" class="form-control" id="englishWord" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="russianWord" class="form-label">Русский перевод</label>
+                            <input type="text" class="form-control" id="russianWord" required>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-submit">Добавить слово</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="alert alert-success d-none" id="successAlert">
+                    Слово успешно добавлено в словарь!
+                </div>
+
+                <div class="alert alert-danger d-none" id="dangerAlert">
+                    text
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('addWordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+        
+            const formData = {
+                englishWord: document.getElementById('englishWord').value,
+                russianWord: document.getElementById('russianWord').value,
+            };
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/send_word', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            xhr.send(JSON.stringify(formData));
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    document.getElementById('successAlert').classList.remove('d-none');
+                    document.getElementById('addWordForm').reset();
+                    
+                    setTimeout(function() {
+                        document.getElementById('successAlert').classList.add('d-none');
+                    }, 3000);
+                } else {
+                    var jsonResponse = JSON.parse(xhr.responseText)
+                    document.getElementById('dangerAlert').textContent = jsonResponse["message"]
+                    document.getElementById('dangerAlert').classList.remove('d-none');
+                    setTimeout(function() {
+                        document.getElementById('dangerAlert').classList.add('d-none');
+                    }, 3000);
+                    console.error('Ошибка:', xhr.responseText.status, jsonResponse["message"]);
+                }
+            };
+        })
+    </script>
+</body>
+</html>
