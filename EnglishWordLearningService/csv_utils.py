@@ -19,7 +19,8 @@ def dictionary_contain(endlish_word) -> bool:
     existing_terms= []
 
     with open(DICTIONARY_CSV, "r", encoding="utf-8") as f:
-        existing_terms = [l.strip("\n") for l in f.readlines()]
+        for l in f.readlines():
+            existing_terms = l.split(",")[0]
 
     if endlish_word in existing_terms:
         return True
