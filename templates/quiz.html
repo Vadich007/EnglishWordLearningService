@@ -52,6 +52,13 @@
 </head>
 <body>
     <div class="container card-container">
+        <button type="button" class="btn btn-secondary mt-3" onclick="window.location.href='dictionary'">
+            <i class="bi bi-arrow-left"></i> К словарю
+          </button>
+
+        <button type="button" class="btn btn-secondary mt-3" onclick="window.location.href='/'">
+            <i class="bi bi-arrow-left"></i> На стартовую
+        </button>
         <h2 class="text-center mb-4">Викторина</h2>
         
         <div class="english-card" id="englishWordCard">
@@ -62,10 +69,10 @@
             <label for="russianInput" class="form-label">Введите перевод на русский:</label>
             <input type="text" class="form-control form-control-lg" id="russianInput" placeholder="Начните вводить...">
         </div>
+
+        <button class="btn btn-primary mt-3" id="checkBtn">Проверить</button>
         
-        <button class="btn btn-outline-secondary mt-3" id="checkBtn">Проверить</button>
-        
-        <button class="btn btn-outline-secondary mt-3" id="nextBtn">Следующее слово</button>
+        <button class="btn btn-danger mt-3" id="nextBtn">Следующее слово</button>
         
         <div class="result-message" id="resultMessage"></div>
         
