@@ -148,6 +148,12 @@
         
         nextBtn.addEventListener('click', showRandomWord);
         
+        russianInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkTranslation();
+            }
+        });
+
         showRandomWord();
     </script>
     
