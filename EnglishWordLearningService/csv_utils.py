@@ -29,7 +29,7 @@ def dictionary_contain(endlish_word) -> bool:
     return False
 
 def add_data_to_dictionary(english_word, russian_word) -> None:
-    new_term_line = f"{english_word};{russian_word}"
+    new_term_line = f"{english_word},{russian_word}"
     
     with open(DICTIONARY_CSV, "a", encoding="utf-8") as f:
         f.write("\n" + new_term_line)
