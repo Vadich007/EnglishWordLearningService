@@ -126,12 +126,27 @@
                     const data = JSON.parse(xhr.responseText);
                     const correctTranslation = data['russian'].toLowerCase();
                     
+                    const xhr1 = new XMLHttpRequest();
+                    xhr1.open('POST', '/add_stat');
+                    xhr1.setRequestHeader('Content-Type', 'application/json');
+
                     if (userTranslation === correctTranslation) {
                         resultMessage.textContent = 'Правильно! ✓';
                         resultMessage.className = 'result-message correct';
+
+                        const requestData1 = JSON.stringify({
+                            stat: "total_success",
+                            });
+
+                        xhr1.send(requestData1);
                     } else {
                         resultMessage.textContent = `Неверно. Правильный перевод: "${correctTranslation}"`;
                         resultMessage.className = 'result-message incorrect';
+
+                        const requestData1 = JSON.stringify({
+                            stat: "total_fail",
+                            });
+                            xhr1.send(requestData1);
                     }
                 } else {
                     console.error('Ошибка:', xhr.statusText);
@@ -139,7 +154,7 @@
                     resultMessage.className = `result-message incorrect`;
                 }
             };
-            
+        
             russianInput.value = '';
             showRandomWord();
         }

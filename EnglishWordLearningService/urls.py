@@ -25,5 +25,7 @@ urlpatterns = [
     path("send_word", views.send_word),
     path("quiz", views.quiz),
     path("random", views.random),
-    path("check", views.check)
+    path("check", views.check),
+    path("stat", views.stat),
+    path("add_stat", views.add_stat)
 ]

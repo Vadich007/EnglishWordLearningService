@@ -4,12 +4,13 @@ from django.http import JsonResponse
 import json
 from . import csv_utils
 from . import validator
+from . import statistic
 
 def index(request):
     return render(request, "index.html")
 
 def dictionary(request):
-    letters = csv_utils.take_data_from_csv()
+    letters = csv_utils.take_data_from_dictionary()
     return render(request, 'dictionary.html', {'letters': letters})
 
 def add_word(request):
@@ -28,7 +29,7 @@ def send_word(request):
         elif csv_utils.dictionary_contain(english_word):
             return JsonResponse({'status': 'error', 'message': 'Слово уже содержится в словаре'}, status=400)
         else:
-            csv_utils.add_data_to_csv(english_word, russian_word)
+            csv_utils.add_data_to_dictionary(english_word, russian_word)
             return JsonResponse({'status': 'success'}, status=200)
 
     return JsonResponse({'error': 'Invalid method'}, status=405)
@@ -49,3 +50,13 @@ def random(request):
 
     return JsonResponse({'error': 'Invalid method'}, status=405)
         
+def stat(request):
+    return render(request, 'stat.html', statistic.get_statistic())
+
+def add_stat(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        csv_utils.add_statistic(data["stat"])
+        return JsonResponse({'status': 'success'}, status=200)
+
+    return JsonResponse({'error': 'Invalid method'}, status=405)

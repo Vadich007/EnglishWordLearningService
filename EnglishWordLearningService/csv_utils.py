@@ -1,8 +1,10 @@
 import random
+import csv
 
 DICTIONARY_CSV = "./data/words.csv"
+STATISTIC_CSV = "./data/statistic.csv"
 
-def take_data_from_csv() -> dict:
+def take_data_from_dictionary() -> dict:
     letters = {}
     
     with open(DICTIONARY_CSV, "r", encoding="utf-8") as f:
@@ -26,7 +28,7 @@ def dictionary_contain(endlish_word) -> bool:
         return True
     return False
 
-def add_data_to_csv(english_word, russian_word) -> None:
+def add_data_to_dictionary(english_word, russian_word) -> None:
     new_term_line = f"{english_word};{russian_word}"
     
     with open(DICTIONARY_CSV, "a", encoding="utf-8") as f:
@@ -50,3 +52,38 @@ def get_russian(english:str):
                 break
 
     return ans
+
+def get_total_words():
+    with open(DICTIONARY_CSV, "r", encoding="utf-8") as f:
+        return len(f.readlines())
+    
+def get_total_success():
+    with open(STATISTIC_CSV, "r", encoding="utf-8") as f:
+        for l in f.readlines():
+            if l.split(',')[0] == "total_success":
+                return int(l.split(',')[1].strip("\n"))
+    
+    return 0
+
+def get_total_fail():
+    with open(STATISTIC_CSV, "r", encoding="utf-8") as f:
+        for l in f.readlines():
+            if l.split(',')[0] == "total_fail":
+                return int(l.split(',')[1].strip("\n"))
+    
+    return 0
+
+def add_statistic(name):
+    stat = {}
+
+    with open(STATISTIC_CSV, "r", encoding="utf-8") as f:
+        for l in f.readlines():
+            col = l.split(',')[0]
+            value = l.split(',')[1].strip("\n")
+            stat[col] = value
+
+    stat[name] = int(stat[name]) + 1
+
+    with open(STATISTIC_CSV, "w", encoding="utf-8") as f:
+        for s in stat:
+            f.write(f"{s},{stat[s]}\n")
