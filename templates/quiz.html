@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .card-container {
+            max-width: 600px;
+            margin: 50px auto;
+        }
+        .english-card {
+            background-color: #e9f5ff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .translation-input {
+            margin-bottom: 20px;
+        }
+        .btn-check {
+            width: 100%;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .result-message {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 15px;
+            min-height: 27px;
+        }
+        .correct {
+            color: #198754;
+        }
+        .incorrect {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container card-container">
+        <h2 class="text-center mb-4">Викторина</h2>
+        
+        <div class="english-card" id="englishWordCard">
+            
+        </div>
+        
+        <div class="translation-input">
+            <label for="russianInput" class="form-label">Введите перевод на русский:</label>
+            <input type="text" class="form-control form-control-lg" id="russianInput" placeholder="Начните вводить...">
+        </div>
+        
+        <button class="btn btn-outline-secondary mt-3" id="checkBtn">Проверить</button>
+        
+        <button class="btn btn-outline-secondary mt-3" id="nextBtn">Следующее слово</button>
+        
+        <div class="result-message" id="resultMessage"></div>
+        
+    </div>
+
+    <script>
+
+        const englishCard = document.getElementById('englishWordCard');
+        const russianInput = document.getElementById('russianInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const resultMessage = document.getElementById('resultMessage');
+        
+        function showRandomWord() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/random');
+            xhr.send();
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    englishCard.textContent = data["english"];
+                } else {
+                    console.error('Ошибка:', xhr.statusText);
+                    resultMessage.textContent = 'Не удалось загрузить слово';
+                    resultMessage.className = `result-message incorrect`;
+                }
+            };
+            russianInput.value = '';
+            russianInput.focus();
+        }
+        
+        function checkTranslation() {
+            const userTranslation = russianInput.value.trim().toLowerCase();
+
+            if (userTranslation === '') {
+                resultMessage.textContent = 'Введите перевод';
+                resultMessage.className = 'result-message incorrect';
+                return;
+            }
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/check');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            const requestData = JSON.stringify({
+                english: englishCard.textContent,
+            });
+            xhr.send(requestData);
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    const correctTranslation = data['russian'].toLowerCase();
+                    
+                    if (userTranslation === correctTranslation) {
+                        resultMessage.textContent = 'Правильно! ✓';
+                        resultMessage.className = 'result-message correct';
+                    } else {
+                        resultMessage.textContent = `Неверно. Правильный перевод: "${correctTranslation}"`;
+                        resultMessage.className = 'result-message incorrect';
+                    }
+                } else {
+                    console.error('Ошибка:', xhr.statusText);
+                    resultMessage.textContent = 'Ошибка проверки';
+                    resultMessage.className = `result-message incorrect`;
+                }
+            };
+            
+            russianInput.value = '';
+            showRandomWord();
+        }
+        
+        checkBtn.addEventListener('click', checkTranslation);
+        
+        nextBtn.addEventListener('click', showRandomWord);
+        
+        showRandomWord();
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

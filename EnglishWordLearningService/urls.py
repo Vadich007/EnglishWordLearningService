@@ -22,5 +22,8 @@ urlpatterns = [
     path('', views.index),
     path("dictionary", views.dictionary),
     path("add_word", views.add_word),
-    path("send_word", views.send_word)
+    path("send_word", views.send_word),
+    path("quiz", views.quiz),
+    path("random", views.random),
+    path("check", views.check)
 ]

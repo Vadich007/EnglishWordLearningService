@@ -31,5 +31,21 @@ def send_word(request):
             csv_utils.add_data_to_csv(english_word, russian_word)
             return JsonResponse({'status': 'success'}, status=200)
 
-    return JsonResponse({'status': 'error'}, status=400)
+    return JsonResponse({'error': 'Invalid method'}, status=405)
+
+def quiz(request):
+    return render(request, 'quiz.html')
     
+def check(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        return JsonResponse({'russian': csv_utils.get_russian(data["english"])})
+
+    return JsonResponse({'error': 'Invalid method'}, status=405)
+    
+def random(request):
+    if request.method == 'GET':
+        return JsonResponse({'english': csv_utils.get_random_word()})
+
+    return JsonResponse({'error': 'Invalid method'}, status=405)
+        
